@@ -26,10 +26,11 @@ export default {
   justify-content: center;
   .second {
     font-size: 20px;
-    text-align: right;
+    text-align: center;
+    font-weight: 600;
   }
   .date {
-    font-size: 16px;
+    font-size: 13px;
   }
 }
 </style>

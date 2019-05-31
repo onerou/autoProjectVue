@@ -60,8 +60,10 @@ export default {
 			})
 			let positionArr = []
 			Promise.all(promiseArr).then(function(values) {
-				values.map((item) => {
-					positionArr.push(item.data.data)
+				values.map((item, index) => {
+					let data = item.data.data
+					data.device = arr[index]
+					positionArr.push(data)
 				})
 				commit('CHANGE_POSITION_ARR', positionArr)
 			})

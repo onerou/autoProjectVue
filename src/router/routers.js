@@ -18,8 +18,8 @@ import CommonRouters from './common' // 引入通用模块
  * }
  */
 
-export default RouterConfig.concat(CommonRouters)
-// export default RouterConfig
+// export default RouterConfig.concat(CommonRouters)
+export default RouterConfig
 
 // export default [{
 //         path: '/login',

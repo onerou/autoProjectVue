@@ -15,7 +15,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ProgressBarPlugin = require('progress-bar-webpack-plugin')
 const chalk = require('chalk')
 const setTitle = require('node-bash-title')
-setTitle('    🍻  海底观测后台管理网')
+setTitle('    🍻  物流实时监控系统')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const os = require('os')
 const HappyPack = require('happypack')
@@ -145,18 +145,18 @@ baseConfig = {
 			]
 		}),
 		new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-		new WebpackDeepScopeAnalysisPlugin(),
+		// new WebpackDeepScopeAnalysisPlugin(),
 		new MiniCssExtractPlugin({
 			filename: _modeflag ? 'css/[name].css' : 'css/[name].[chunkhash:8].css',
 			chunkFilename: _modeflag ? 'css/[name].css' : "css/[name].[chunkhash:8].css'"
 		}),
 		new HtmlWebpackPlugin({
-			title: '海底观测网后台管理系统',
+			title: '物流实时监控系统',
 			filename: 'index.html',
 			template: './public/index.html'
 		}),
 		new WebpackBuildNotifierPlugin({
-			title: '海底观测网后台管理系统',
+			title: '物流实时监控系统',
 			logo: './public/favicon.png',
 			suppressSuccess: true,
 			sound: true

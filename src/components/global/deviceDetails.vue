@@ -16,115 +16,207 @@
       <div class="bottom">{{details.station}}</div>
     </div>
     <div class="contain">
-      <vue-scroll>
-        <img
-          class="deviceImg"
-          :src="details.imageUrl"
-          onerror="this.src='http://placehold.it/200x300'"
-        >
-        <div class="plan bgColor">
-          <div class="place">
-            <div class="name">
-              <div class="startName nameFont">
-                <div
-                  class="china"
-                >{{details.starting_position?details.starting_position.split('#')[0]:''}}</div>
-                <div
-                  class="en"
-                >{{details.starting_position?details.starting_position.split('#')[1]:''}}</div>
+      <!-- <div class="tab bgColor"> -->
+      <Tabs :value="nowTab">
+        <TabPane label="详情" name="details">
+          <img
+            class="deviceImg"
+            :src="details&&details.imageUrl"
+            onerror="this.src='http://placehold.it/200x300'"
+          >
+          <div class="plan bgColor">
+            <div class="place">
+              <div class="name">
+                <div class="startName nameFont">
+                  <div
+                    class="china"
+                  >{{details.starting_position?details.starting_position.split('#')[0]:''}}</div>
+                  <div
+                    class="en"
+                  >{{details.starting_position?details.starting_position.split('#')[1]:''}}</div>
+                </div>
+                <div class="icon">
+                  <img src="@/assets/images/details/centerDevice.png" alt>
+                </div>
+                <div class="endName nameFont">
+                  <div class="china">{{details.end_position?details.end_position.split('#')[0]:''}}</div>
+                  <div class="en">{{details.end_position?details.end_position.split('#')[1]:''}}</div>
+                </div>
               </div>
-              <div class="icon">
-                <img src="http://placehold.it/40x40" alt>
-              </div>
-              <div class="endName nameFont">
-                <div class="china">{{details.end_position?details.end_position.split('#')[0]:''}}</div>
-                <div class="en">{{details.end_position?details.end_position.split('#')[1]:''}}</div>
+              <div class="progess">
+                <Progress
+                  :percent="nowdetail.distance-nowdetail.diffDistance>100?100:nowdetail.distance-nowdetail.diffDistance"
+                  status="active"
+                  hide-info
+                  :stroke-width="5"
+                >
+                  <Icon type="checkmark-circled"></Icon>
+                </Progress>
               </div>
             </div>
-            <div class="progess">
-              <Progress
-                :percent="nowdetail.distance-nowdetail.diffDistance"
-                status="active"
-                hide-info
-                :stroke-width="5"
+            <div class="time">
+              <div class="planStart">
+                <div class="title">计划出发</div>
+                <div class="date">
+                  <div class="hour">{{parseTime(details.starttime,'{h}:{i}')}}</div>
+                  <div class="dateTime">{{parseTime(details.starttime,'{y}-{m}-{d}')}}</div>
+                </div>
+              </div>
+              <div class="nowTime">
+                <div class="title">当前时间</div>
+                <div class="date">
+                  <div class="hour">{{parseTime(nowDate,'{h}:{i}')}}</div>
+                  <div class="dateTime">{{parseTime(nowDate,'{y}-{m}-{d}')}}</div>
+                </div>
+              </div>
+              <div class="planEnd">
+                <div class="title">计划到达</div>
+                <div class="date">
+                  <div class="hour">{{parseTime(details.endtime,'{h}:{i}')}}</div>
+                  <div class="dateTime">{{parseTime(details.endtime,'{y}-{m}-{d}')}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row bgColor">
+            <div class="key">当前速度</div>
+            <div class="data">{{nowdetail.speed}}km/h</div>
+          </div>
+          <div class="row bgColor">
+            <div class="key">距离目的地</div>
+            <div class="data">{{nowdetail.diffDistance}}km</div>
+          </div>
+          <div class="row bgColor">
+            <div class="key">预计到达时间</div>
+            <div class="data">{{nowdetail.overTime}}</div>
+          </div>
+        </TabPane>
+        <TabPane label="人员" name="people">
+          <img
+            class="deviceImg"
+            :src="peopleDetails&&peopleDetails.icon"
+            onerror="this.src='http://placehold.it/200x300'"
+          >
+          <div class="row bgColor">
+            <div class="key">姓名</div>
+            <div class="data">{{peopleDetails.name}}</div>
+          </div>
+          <div class="row bgColor">
+            <div class="key">生日</div>
+            <div class="data">{{parseTime(peopleDetails.birthday,'{y}-{m}-{d}')}}</div>
+          </div>
+          <div class="row bgColor">
+            <div class="key">性别</div>
+            <div class="data">{{peopleDetails.sex=='1'?'男':'女'}}</div>
+          </div>
+          <div class="row bgColor">
+            <div class="key">邮箱</div>
+            <div class="data">{{peopleDetails.email||' '}}</div>
+          </div>
+          <div class="row bgColor">
+            <div class="key">电话</div>
+            <div class="data">{{peopleDetails.cellPhone||' '}}</div>
+          </div>
+          <div class="row bgColor">
+            <div class="key">身份证</div>
+            <div class="data">{{peopleDetails.idCard||' '}}</div>
+          </div>
+          <div class="row bgColor">
+            <div class="key">驾驶证</div>
+            <div class="data">{{peopleDetails.drivingLicence||' '}}</div>
+          </div>
+          <div class="row bgColor">
+            <div class="key">现住址</div>
+            <div class="data">{{peopleDetails.address||' '}}</div>
+          </div>
+        </TabPane>
+        <TabPane label="载物" name="load">
+          <vue-scroll>
+            <p v-if="!TaskThing" style="text-align:center;">暂无数据</p>
+            <div class="TaskThing" v-if="TaskThing">
+              <img
+                class="deviceImg"
+                :src="TaskThing&&TaskThing.imageUrl"
+                onerror="this.src='http://placehold.it/200x300'"
               >
-                <Icon type="checkmark-circled"></Icon>
-              </Progress>
+              <div class="row bgColor">
+                <div class="key">名称</div>
+                <div class="data">{{TaskThing.name||' '}}</div>
+              </div>
+              <div class="row bgColor">
+                <div class="key">数量</div>
+                <div class="data">{{TaskThing.number||' '}}</div>
+              </div>
+              <div class="row bgColor">
+                <div class="key">重量</div>
+                <div class="data">{{TaskThing.weight||' '}}</div>
+              </div>
+              <div class="row bgColor">
+                <div class="key">存放方法</div>
+                <div class="data">{{TaskThing.storageLayout||' '}}</div>
+              </div>
+              <div class="row bgColor" v-for=" (item,index) of TaskThing.other" :key="index">
+                <div class="key">{{index}}</div>
+                <div class="data">{{item||' '}}</div>
+              </div>
             </div>
+          </vue-scroll>
+        </TabPane>
+        <TabPane label="指令" name="instruction">
+          <vue-scroll style="height:73vh;">
+            <!-- <div class="messageRow" v-for="(item,index) of messageList" :key="index">
+              <div class="time">{{parseTime(item.time,'{h}:{i}:{s}')}}</div>
+              <div class="name">{{item.from==1087?'已发送给':'收到来自'}} {{item.name}}：</div>
+              <div class="message">{{item.msg}}</div>
+            </div>-->
+            <div class="message" v-for="(item,index) of messageList" :key="index">
+              <div class="time rowMessage">{{parseTime(item.time,'{h}:{i}:{s}')}}</div>
+              <div class="cont rowMessage" :class="{meCont:item.from==1087}">{{item.msg}}</div>
+              <div class="status rowMessage"></div>
+            </div>
+          </vue-scroll>
+          <div class="send">
+            <Input v-model="sendMessage" icon="ios-time-outline" placeholder="请输入" style/>
+            <Button type="primary" @click="sendMessageFn">发送</Button>
           </div>
-          <div class="time">
-            <div class="planStart">
-              <div class="title">计划出发</div>
-              <div class="date">
-                <div class="hour">{{parseTime(details.starttime,'{h}:{i}')}}</div>
-                <div class="dateTime">{{parseTime(details.starttime,'{y}-{m}-{d}')}}</div>
-              </div>
-            </div>
-            <div class="nowTime">
-              <div class="title">当前时间</div>
-              <div class="date">
-                <div class="hour">{{parseTime(nowDate,'{h}:{i}')}}</div>
-                <div class="dateTime">{{parseTime(nowDate,'{y}-{m}-{d}')}}</div>
-              </div>
-            </div>
-            <div class="planEnd">
-              <div class="title">计划到达</div>
-              <div class="date">
-                <div class="hour">{{parseTime(details.endtime,'{h}:{i}')}}</div>
-                <div class="dateTime">{{parseTime(details.endtime,'{y}-{m}-{d}')}}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row bgColor">
-          <div class="key">当前速度</div>
-          <div class="data">{{nowdetail.speed}}km/h</div>
-        </div>
-        <div class="row bgColor">
-          <div class="key">距离目的地</div>
-          <div class="data">{{nowdetail.diffDistance}}km</div>
-        </div>
-        <div class="row bgColor">
-          <div class="key">预计到达时间</div>
-          <div class="data">{{nowdetail.overTime}}</div>
-        </div>
-        <div class="tab bgColor">
-          <Tabs value="nowTab">
-            <TabPane label="标签一" name="people">标签一的内容</TabPane>
-            <TabPane label="标签二" name="load">标签二的内容</TabPane>
-            <TabPane label="标签三" name="instruction">标签三的内容</TabPane>
-          </Tabs>
-        </div>
-      </vue-scroll>
+        </TabPane>
+      </Tabs>
+      <!-- </div> -->
     </div>
     <div class="footer bgColor">
-      <div class="btn" @click="changeTab('people')">
-        <div class="icon">
-          <img src="http://placehold.it/40x40" alt srcset>
+      <div class="btn" :class="{active:nowTab=='details'}" @click="changeTab('details')">
+        <div class="icon" @click="changeTab('details')">
+          <img src="@/assets/images/menu/device.png" alt srcset>
+        </div>
+        <div class="label">运输</div>
+      </div>
+      <div class="btn" :class="{active:nowTab=='people'}" @click="changeTab('people')">
+        <div class="icon" @click="changeTab('people')">
+          <img src="@/assets/images/detailsFooter/people.png" alt srcset>
         </div>
         <div class="label">人员</div>
       </div>
-      <div class="btn" @click="changeTab('load')">
-        <div class="icon">
-          <img src="http://placehold.it/40x40" alt srcset>
+      <div class="btn" :class="{active:nowTab=='load'}" @click="changeTab('load')">
+        <div class="icon" @click="changeTab('load')">
+          <img src="@/assets/images/detailsFooter/taskThing.png" alt srcset>
         </div>
         <div class="label">载物</div>
       </div>
       <div class="btn" @click="getTrajectory">
         <div class="icon">
-          <img src="http://placehold.it/40x40" alt srcset>
+          <img src="@/assets/images/detailsFooter/trajectory.png" alt srcset>
         </div>
         <div class="label">轨迹</div>
       </div>
       <div class="btn" @click="setFollowPiont">
         <div class="icon">
-          <img src="http://placehold.it/40x40" alt srcset>
+          <img src="@/assets/images/detailsFooter/foollow.png" alt srcset>
         </div>
         <div class="label">追踪</div>
       </div>
-      <div class="btn">
+      <div class="btn" :class="{active:nowTab=='instruction'}" @click="changeTab('instruction')">
         <div class="icon" @click="changeTab('instruction')">
-          <img src="http://placehold.it/40x40" alt srcset>
+          <img src="@/assets/images/detailsFooter/instructions.png" alt srcset>
         </div>
         <div class="label">指令</div>
       </div>
@@ -147,13 +239,17 @@ export default {
         diffDistance: '正在获取...',
         distance: '正在获取...'
       },
-      nowTab: 'people'
+      nowTab: 'details',
+      peopleDetails: {},
+      TaskThing: {},
+      messageList: [],
+      sendMessage: ''
     }
   },
   watch: {
     details(nl) {
       this.t && clearInterval(this.t)
-      this.getNowDetail()
+      this.getDetailsShow == true && this.getNowDetail()
       this.nowdetail = {
         arrivalTime: '正在获取...',
         diffDistance: '正在获取...',
@@ -175,10 +271,76 @@ export default {
     parseTime(time, el) {
       return parseTime(time, el)
     },
+    sendMessageFn() {
+      // this.details
+      let message = this.sendMessage
+      let path = this.apiPath.message.sendMessage
+      this.http
+        .post(path, {
+          appid: 21,
+          content:
+            `taskId:${this.details.id};name:${this.peopleDetails.name};msg:` +
+            message,
+          from: 1087,
+          to: this.details.executorid / 1,
+          type: 2
+        })
+        .then(res => {
+          if (res.data.code == 0) {
+            this.$Message.success('发送成功')
+            this.sendMessage = ''
+            this.messageList.unshift({
+              appid: 21,
+              from: 1087,
+              msg: message,
+              name: this.peopleDetails.name,
+              status: 0,
+              taskId: this.details.id,
+              time: new Date().getTime(),
+              to: this.details.executorid / 1,
+              type: 2
+            })
+          }
+        })
+    },
+    getPeopleDetail() {
+      let userId = this.details.executorid
+      let path = this.apiPath.deviceList.getUserById
+      let that = this
+      this.http
+        .get(path, {
+          userId
+        })
+        .then(res => {
+          if (!res.data) return
+          let data = res.data.data
+          that.peopleDetails = data
+        })
+    },
+    findTaskThingByTaskId() {
+      let { taskId } = this.details
+      let path = this.apiPath.deviceList.findTaskThingByTaskId
+      let that = this
+      this.http
+        .get(path, {
+          taskId
+        })
+        .then(
+          res => {
+            if (!res.data || !res.data.data) return
+            let data = res.data.data
+            that.TaskThing = data
+          },
+          rej => {
+            that.TaskThing = undefined
+          }
+        )
+    },
     changeTab(val) {
       this.nowTab = val
     },
     close() {
+      this.$emit('clearTrajectory')
       this.$store.dispatch('home/changeDetailsShow', false)
     },
     getTrajectory() {
@@ -187,11 +349,35 @@ export default {
     setFollowPiont() {
       this.$emit('setFollowPiont')
     },
+    findAllTaskCommand() {
+      let path = this.apiPath.deviceList.findAllTaskCommand
+      let nowDate = new Date().getTime()
+      let that = this
+      this.http
+        .get(path, {
+          endTime: nowDate,
+          limit: 5,
+          startTime: nowDate - 5000,
+          taskId: this.details.taskId
+        })
+        .then(res => {
+          let data = res.data
+          if (!data || (data && data.data.data.length === 0)) return
+          that.messageList = [...data.data.data, ...that.messageList]
+          if (that.messageList.length > 20) {
+            while (that.messageList.length > 20) {
+              that.messageList.shift()
+            }
+          }
+        })
+    },
     getNowDetail() {
       let that = this
       let path = this.apiPath.deviceList.nowDeviceDetails
       this.t && clearInterval(this.t)
-      console.log('TCL: getNowDetail -> this.details', this.details)
+      this.getPeopleDetail()
+      this.findTaskThingByTaskId()
+      this.messageList = []
       let { licencePlate, route_planning, taskId } = this.details
       this.http
         .get(path, { routePlanningId: route_planning, equipment: licencePlate })
@@ -203,8 +389,10 @@ export default {
             '{y}-{m}-{d} {h}:{i}'
           )
           that.nowdetail = data
+          that.$emit('getTrajectory', data)
         })
       this.t = setInterval(() => {
+        that.findAllTaskCommand()
         this.http
           .get(path, {
             routePlanningId: route_planning,
@@ -219,11 +407,11 @@ export default {
             )
             that.nowdetail = data
           })
-
         that.nowDate = new Date()
       }, 5000)
     }
   },
+  mounted() {},
   created() {}
 }
 </script>
@@ -234,7 +422,7 @@ export default {
   position: fixed;
   background-color: rgba(23, 26, 30, 0.7);
   z-index: 99;
-  min-width: 21vw;
+  width: 380px;
   height: 90vh;
   left: 1vw;
   bottom: 1vh;
@@ -260,7 +448,7 @@ export default {
     .top {
       color: #ffffff;
       .License {
-        font-size: 18px;
+        font-size: 16px;
         color: rgb(241, 206, 32);
       }
       .status {
@@ -282,10 +470,10 @@ export default {
     height: 70%;
     .deviceImg {
       width: 100%;
-      height: 220px;
+      height: 240px;
     }
     .plan {
-      height: 180px;
+      height: 200px;
       display: flex;
       flex-direction: column;
       .place {
@@ -297,12 +485,17 @@ export default {
           display: flex;
           justify-content: space-around;
           line-height: calc(200px * 0.6 * 0.9);
-          font-size: 26px;
+          font-size: 24px;
           color: #ffffff;
           .icon {
             display: flex;
             flex-direction: column;
             justify-content: center;
+            img {
+              border-radius: 50%;
+              background-color: #ffffff;
+              overflow: hidden;
+            }
           }
           .nameFont {
             display: flex;
@@ -311,7 +504,7 @@ export default {
             line-height: 1.5;
             text-align: center;
             .en {
-              font-size: 18px;
+              font-size: 14px;
             }
           }
         }
@@ -329,20 +522,21 @@ export default {
           font-size: 14px;
         }
         .hour {
-          font-size: 16px;
+          font-size: 14px;
         }
         .dateTime {
-          font-size: 14px;
+          font-size: 12px;
+          transform: scale(0.9);
         }
       }
     }
     .row {
-      height: 40px;
+      height: 45px;
       margin-top: 5px;
       display: flex;
       justify-content: space-between;
       font-size: 16px;
-      line-height: 40px;
+      line-height: 45px;
       box-sizing: border-box;
       padding: 0 20px;
       color: #ffffff;
@@ -353,29 +547,132 @@ export default {
     .tab {
       margin-top: 5px;
       height: 210px;
+      overflow: hidden;
     }
-    .ivu-tabs-nav-scroll {
-      display: none;
+    .message {
+      display: flex;
+      flex-direction: column;
+      padding: 0px 50px;
+      .rowMessage {
+        margin-bottom: 5px;
+      }
+      .time {
+        text-align: center;
+        font-size: 14px;
+      }
+      .cont {
+        background-color: rgb(238, 238, 238);
+        color: black;
+        padding: 10px 15px;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+      .meCont {
+        background-color: rgb(255, 238, 166);
+        color: #aaaaaa;
+      }
+      .status {
+        text-align: right;
+        color: red;
+        font-weight: bold;
+        font-size: 14px;
+      }
+    }
+    .ivu-tabs {
+      height: 100%;
+      width: 380px;
+      color: #ffffff;
+      // .tabRow {
+      //   font-size: 14px;
+      //   margin: 10px 0;
+      //   box-sizing: border-box;
+      //   & > div {
+      //     width: 50%;
+      //   }
+      // }
+      .ivu-tabs-tabpane {
+        // height: 200px;
+        .send {
+          display: flex;
+          justify-content: space-around;
+          padding: 0 10px;
+          & > div {
+            margin-right: 10px;
+          }
+        }
+      }
+      .imageRow {
+        display: flex;
+        justify-content: space-around;
+        overflow: hidden;
+        .image {
+          width: 50%;
+        }
+        .title {
+          flex-grow: 1;
+        }
+        .imagetabRow {
+          display: flex;
+          justify-content: space-around;
+        }
+        img {
+          height: 60px;
+          width: 100px;
+          margin-left: 20px;
+          margin-top: 10px;
+        }
+      }
+      .ivu-tabs-bar {
+        border-bottom: 0;
+        margin-bottom: 5px;
+        height: 0;
+        overflow: hidden;
+      }
+      .twoLay {
+        display: flex;
+        justify-content: space-around;
+      }
+      .key {
+        text-align: left;
+        // width: 40px;
+        font-size: 14px;
+        // margin-left: 0px;
+      }
+      .data {
+        font-size: 14px;
+      }
+      .val {
+        flex-grow: 1;
+      }
     }
   }
   .footer {
     height: 60px;
     display: flex;
     justify-content: space-around;
-    padding: 5px;
     text-align: center;
     color: #ffffff;
+    .active {
+      background-color: rgb(82, 79, 79);
+    }
     .btn {
+      padding: 5px 15px;
       display: flex;
       cursor: pointer;
       flex-direction: column;
       justify-content: space-around;
+      .label {
+        font-size: 12px;
+        transform: scale(0.8);
+        color: #cccccc;
+      }
       .icon {
         display: flex;
         flex-direction: column;
         justify-content: center;
         img {
-          width: 80%;
+          width: 32px;
+          height: 32px;
           margin: auto;
         }
       }

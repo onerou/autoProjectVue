@@ -32,12 +32,13 @@ const turnTo = (to, access, next) => {
 		}) // 无权限，重定向到401页面
 }
 router.beforeEach((to, from, next) => {
+
 	iView.LoadingBar.start()
 	const token = cookie.get('token')
-	if (process.env.NODE_ENV != 'production') {
-		next()
-		return
-	}
+	// if (process.env.NODE_ENV != 'production') {
+	// 	next()
+	// 	return
+	// }
 	if (!token && to.name !== LOGIN_PAGE_NAME) {
 		// 未登录且要跳转的页面不是登录页
 		next({
@@ -48,10 +49,10 @@ router.beforeEach((to, from, next) => {
 		// 未登陆且要跳转的页面是登录页
 		next() // 跳转
 		iView.LoadingBar.finish()
-	} else if (token && to.name === LOGIN_PAGE_NAME) {
+	} else if (token && (to.name === LOGIN_PAGE_NAME || to.path === '/')) {
 		// 已登录且要跳转的页面是登录页
 		next({
-			name: homeName // 跳转到homeName页
+			name: 'home' // 跳转到homeName页
 		})
 		iView.LoadingBar.finish()
 	} else {

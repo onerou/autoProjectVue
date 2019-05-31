@@ -1,6 +1,9 @@
 // import API from '@/api/api'
 import axios from 'axios'
-import { Message, Spin } from 'iview'
+import {
+	Message,
+	Spin
+} from 'iview'
 import router from '@/router'
 import cookie from './cookie'
 //1.系统未登录之前的请求
@@ -28,7 +31,7 @@ let cancel,
 let msg = ''
 const CancelToken = axios.CancelToken
 const service = axios.create()
-service.defaults.withCredentials = true
+// service.defaults.withCredentials = true
 
 function destroy(url) {
 	delete promiseArr[url]
@@ -50,6 +53,8 @@ service.interceptors.request.use(
 		// 	promiseArr[config.url] = cancel
 		// }
 		// 添加全局的loading...
+		let token = cookie.get('token')
+		if (token) config.headers.Authorization = `${token}`
 		if (!Object.keys(promiseArr).length) {
 			Spin.show() // 不建议开启，因为界面不友好
 		}
@@ -69,7 +74,11 @@ service.interceptors.request.use(
 // response 拦截器
 service.interceptors.response.use(
 	(response) => {
-		const { data, status, url } = response
+		const {
+			data,
+			status,
+			url
+		} = response
 		destroy(url)
 		/**
 		 * code为非20000是抛错 可结合自己业务进行修改
@@ -118,13 +127,13 @@ export const req = {
 		delete param._index
 		return new Promise((resolve, reject) => {
 			service({
-				method: 'get',
-				url,
-				params: param,
-				cancelToken: new CancelToken((c) => {
-					cancel = c
+					method: 'get',
+					url,
+					params: param,
+					cancelToken: new CancelToken((c) => {
+						cancel = c
+					})
 				})
-			})
 				.then((res) => {
 					console.log('res: ', res)
 					if (!res.data) {
@@ -167,7 +176,6 @@ export const req = {
 						resolve(res)
 					} else {
 						Message.error(res.data.msg || '错误')
-						resolve(res)
 						reject(res.data.msg)
 					}
 				})
@@ -211,12 +219,16 @@ export const req = {
 		delete param._index
 		return new Promise((resolve, reject) => {
 			service({
-				method: 'post',
-				url,
-				data: param,
-				params: param
-			})
+					method: 'post',
+					url,
+					data: param
+				})
 				.then((res) => {
+					// let urlList = url.split('/')
+					// console.log("TCL: post -> url", )
+					// if(urlList[urlList.length - 1]=='loginSelect'){
+
+					// }
 					console.log('res: ', res)
 					if (
 						(res.status == 200 && res.data && res.data.code == 0) ||
@@ -305,11 +317,11 @@ export const req = {
 		})
 		return new Promise((resolve, reject) => {
 			service({
-				method: type,
-				url,
-				params: formData,
-				data: formData
-			})
+					method: type,
+					url,
+					params: formData,
+					data: formData
+				})
 				.then((res) => {
 					console.log('res: ', res)
 					if (

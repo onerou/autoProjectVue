@@ -1,13 +1,13 @@
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const os = require('os')
 const interfaces = os.networkInterfaces()
-var IPAdress = ''
+var ipAddress = ''
 for (var devName in interfaces) {
-	var iface = interfaces[devName]
-	for (var i = 0; i < iface.length; i++) {
-		var alias = iface[i]
+	var iFace = interfaces[devName]
+	for (var i = 0; i < iFace.length; i++) {
+		var alias = iFace[i]
 		if (alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal) {
-			IPAdress = alias.address
+			ipAddress = alias.address
 		}
 	}
 }
@@ -20,14 +20,14 @@ module.exports = {
 		stats: 'errors-only',
 		open: 'Chrome',
 		hot: true,
-		host: IPAdress,
-		proxy: {
-			'/oceanview/*': {
-				target: 'http://1.119.5.8:20002',
-				changeOrigin: true,
-				secure: false,
-			}
-		}
+		host: ipAddress
+		// proxy: {
+		// 	'/oceanview/*': {
+		// 		target: 'http://1.119.5.8:20002',
+		// 		changeOrigin: true,
+		// 		secure: false
+		// 	}
+		// }
 	},
 	plugins: [],
 	optimization: {

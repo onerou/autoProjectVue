@@ -4,7 +4,7 @@ export default {
 	namespaced: true,
 	state: {
 		data: [],
-		avatorImgPath: 'https://placehold.it/40x40'
+		avatorImgPath: 'static/images/user.png'
 	},
 	getters: {
 		getData(state) {

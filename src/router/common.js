@@ -1,9 +1,9 @@
 export default [
 	// 默认页面
 	{
-		path: '*',
+		path: '/',
 		redirect: (to) => {
-			to('/home')
+			to('/login')
 		}
 	}
 	// {
