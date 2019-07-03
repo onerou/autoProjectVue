@@ -1,99 +1,26 @@
 <template>
   <div class="side-menu-wrapper">
     <slot></slot>
-    <Menu
-      ref="menu"
-      v-show="!collapsed"
-      :active-name="activeName"
-      :open-names="openedNames"
-      :accordion="accordion"
-      :theme="theme"
-      width="256"
-      @on-select="handleSelect"
-    >
-      <!-- <template v-for="item in menuList">
+    <Menu ref="menu" v-show="!collapsed" :active-name="activeName" :open-names="openedNames" :accordion="accordion" :theme="theme" width="auto" @on-select="handleSelect">
+      <template v-for="item in menuList">
         <template v-if="item.children && item.children.length === 1">
           <side-menu-item v-if="showChildren(item)" :key="`menu-${item.name}`" :parent-item="item"></side-menu-item>
           <menu-item v-else :name="getNameOrHref(item, true)" :key="`menu-${item.children[0].name}`"><common-icon :type="item.children[0].icon || ''"/><span>{{ showTitle(item.children[0]) }}</span></menu-item>
-          <menu-item
-            v-else
-            :name="getNameOrHref(item, true)"
-            :key="`menu-${item.children[0].name}`"
-          >
-            <common-icon :type="item.children[0].icon || ''"/>
-            <span>{{ item.children[0].name }}</span>
-          </menu-item>
         </template>
         <template v-else>
           <side-menu-item v-if="showChildren(item)" :key="`menu-${item.name}`" :parent-item="item"></side-menu-item>
-          <menu-item v-else :name="getNameOrHref(item)" :key="`menu-${item.name}`">
-            <common-icon :type="item.icon || ''"/>
-            <span>{{ item.name }}</span>
-            <span>{{ showTitle(item) }}</span>
-          </menu-item>
+          <menu-item v-else :name="getNameOrHref(item)" :key="`menu-${item.name}`"><common-icon :type="item.icon || ''"/><span>{{ showTitle(item) }}</span></menu-item>
         </template>
-      </template>-->
-      <menu-item
-        v-if="item.sub&&item.sub.length==0"
-        v-for="(item,index) in menuList"
-        :name="getPathName(item.path)"
-        :to="item.path"
-        :key="index"
-      >
-        <Icon :type="item.remark"/>
-        {{ item.name }}
-      </menu-item>
-      <Submenu
-        v-if="item.sub&&item.sub.length>0"
-        v-for="(item,index) in menuList"
-        :key="index"
-        :name="getSubName(item)"
-      >
-        <template slot="title">
-          <Icon :type="item.remark"/>
-          {{item.name}}
-        </template>
-        <MenuItem
-          :name="getName(val.path)"
-          v-for="(val,i) in item.sub"
-          :to="val.path"
-          :key="i"
-        >{{ val.name }}</MenuItem>
-      </Submenu>
+      </template>
     </Menu>
-    <!-- <div class="menu-collapsed" v-show="collapsed" :list="menuList">
+    <div class="menu-collapsed" v-show="collapsed" :list="menuList">
       <template v-for="item in menuList">
-        <collapsed-menu
-          v-if="item.children && item.children.length > 1"
-          @on-click="handleSelect"
-          hide-title
-          :root-icon-size="rootIconSize"
-          :icon-size="iconSize"
-          :theme="theme"
-          :parent-item="item"
-          :key="`drop-menu-${item.name}`"
-        ></collapsed-menu>
-        <Tooltip
-          transfer
-          v-else
-          :content="item.children && item.children[0] ? item.children[0].name : item.name"
-          placement="right"
-          :key="`drop-menu-${item.name}`"
-        >
-          <a
-            @click="handleSelect(getNameOrHref(item, true))"
-            class="drop-menu-a"
-            :style="{textAlign: 'center'}"
-          >
-            <common-icon
-              :size="rootIconSize"
-              :color="textColor"
-              :type="item.icon || (item.children && item.children[0].icon)"
-            />
-          </a>
+        <collapsed-menu v-if="item.children && item.children.length > 1" @on-click="handleSelect" hide-title :root-icon-size="rootIconSize" :icon-size="iconSize" :theme="theme" :parent-item="item" :key="`drop-menu-${item.name}`"></collapsed-menu>
+        <Tooltip transfer v-else :content="showTitle(item.children && item.children[0] ? item.children[0] : item)" placement="right" :key="`drop-menu-${item.name}`">
+          <a @click="handleSelect(getNameOrHref(item, true))" class="drop-menu-a" :style="{textAlign: 'center'}"><common-icon :size="rootIconSize" :color="textColor" :type="item.icon || (item.children && item.children[0].icon)"/></a>
         </Tooltip>
       </template>
-    </div>-->
+    </div>
   </div>
 </template>
 <script>
@@ -104,7 +31,7 @@ import mixin from './mixin'
 
 export default {
   name: 'SideMenu',
-  mixins: [mixin],
+  mixins: [ mixin ],
   components: {
     SideMenuItem,
     CollapsedMenu
@@ -112,7 +39,7 @@ export default {
   props: {
     menuList: {
       type: Array,
-      default() {
+      default () {
         return []
       }
     },
@@ -132,86 +59,53 @@ export default {
       default: 16
     },
     accordion: Boolean,
-    // activeName: {
-    //   type: String,
-    //   default: 'aHome'
-    // },
+    activeName: {
+      type: String,
+      default: ''
+    },
     openNames: {
       type: Array,
       default: () => []
     }
   },
-  data() {
+  data () {
     return {
-      activeName: 'aHome',
       openedNames: []
     }
   },
   methods: {
-    getName(path) {
-      return path.split('/')[2]
-    },
-    getSubName(data) {
-      return data.path.split('/')[1]
-    },
-    getPathName(path) {
-      return path.split('/')[1]
-    },
-
-    handleSelect(name) {
+    handleSelect (name) {
       this.$emit('on-select', name)
     },
-    getOpenedNamesByActiveName(name) {
-      return this.$route.matched
-        .map(item => item.name)
-        .filter(item => item !== name)
+    getOpenedNamesByActiveName (name) {
+      return this.$route.matched.map(item => item.name).filter(item => item !== name)
     },
-    updateOpenName(name) {
+    updateOpenName (name) {
       if (name === this.$config.homeName) this.openedNames = []
       else this.openedNames = this.getOpenedNamesByActiveName(name)
     }
   },
   computed: {
-    textColor() {
+    textColor () {
       return this.theme === 'dark' ? '#fff' : '#495060'
     }
   },
   watch: {
-    activeName(name) {
-      if (this.accordion)
-        this.openedNames = this.getOpenedNamesByActiveName(name)
-      else
-        this.openedNames = getUnion(
-          this.openedNames,
-          this.getOpenedNamesByActiveName(name)
-        )
+    activeName (name) {
+      if (this.accordion) this.openedNames = this.getOpenedNamesByActiveName(name)
+      else this.openedNames = getUnion(this.openedNames, this.getOpenedNamesByActiveName(name))
     },
-    openNames(newNames) {
+    openNames (newNames) {
       this.openedNames = newNames
     },
-    openedNames() {
+    openedNames () {
       this.$nextTick(() => {
-        this.$refs.menu.updateOpened()
-      })
-    },
-
-    menuList() {
-      this.$nextTick(() => {
-        this.activeName = this.$route.path.slice(1)
-        if (this.activeName.indexOf('/') != -1) {
-          this.activeName = this.activeName.split('/')[1]
-        }
-        this.openedNames = [...this.getOpenedNamesByActiveName(this.activeName)]
-        this.$refs.menu.updateActiveName()
         this.$refs.menu.updateOpened()
       })
     }
   },
-  mounted() {
-    // this.openedNames = getUnion(
-    //   this.openedNames
-    //   // this.getOpenedNamesByActiveName(name)
-    // )
+  mounted () {
+    this.openedNames = getUnion(this.openedNames, this.getOpenedNamesByActiveName(name))
   }
 }
 </script>

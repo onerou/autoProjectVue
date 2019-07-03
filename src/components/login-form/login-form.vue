@@ -67,26 +67,12 @@ export default {
           let username = this.form.userName,
             password = this.form.password
           // this.handleLogin({ userName, password }).then(res => {
-          //   this.getUserInfo().then(res => {
-          //     this.$router.push({
-          //       name: this.$config.homeName
-          //     })
-          //   })
+          this.getUserInfo().then(res => {
+            this.$router.push({
+              name: this.$config.homeName
+            })
+          })
           // })
-
-          let path = that.apiPath.login.loginIn
-          that.http
-            .post(path, {
-              username,
-              password
-            })
-            .then(res => {
-              if (res.data.code != 0) return
-              cookie.set('userName', res.data.msg)
-              that.$router.push({
-                path: '/aHome'
-              })
-            })
         }
       })
     }

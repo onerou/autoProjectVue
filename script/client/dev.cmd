@@ -1,0 +1,1 @@
+set-bash-title && start webpack --mode development --profile --json > ./dist/devStats.json

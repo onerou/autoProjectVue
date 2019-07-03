@@ -1,0 +1,1 @@
+set-bash-title && start webpack --mode production --profile --json > ./dist/buildStats.json

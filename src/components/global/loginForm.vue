@@ -75,19 +75,21 @@ export default {
       this.$refs[name].validate(valid => {
         if (valid) {
           let pass = that.formInline.password
-          let path = that.apiPath.login.loginIn
-          that.http
-            .post(path, {
-              name: that.formInline.user,
-              password: md5(pass),
-              type: 1
-            })
-            .then(res => {
-              console.log('TCL: handleSubmit -> res', res)
-              cookie.set('token', res.data.data.token)
-              cookie.set('user', JSON.stringify(res.data.data))
-              that.$router.push({ path: '/home' })
-            })
+          let name = that.formInline.user
+          // 登陆请求体
+          // let path = that.apiPath.login.loginIn
+          // that.http
+          //   .post(path, {
+          //     name: that.formInline.user,
+          //     password: md5(pass),
+          //     type: 1
+          //   })
+          //   .then(res => {
+          //     console.log('TCL: handleSubmit -> res', res)
+          cookie.set('token', name)
+          //     cookie.set('user', JSON.stringify(res.data.data))
+          that.$router.push({ path: '/home' })
+          // })
         }
       })
     }
