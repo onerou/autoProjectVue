@@ -87,7 +87,7 @@
 		"webpack-manifest-plugin": "^2.0.4",
 		"webpack-merge": "^4.2.1",
 		"webpack-parallel-uglify-plugin": "^1.1.0",
-		"yargs-parser": "^11.1.1"
+		"yargs-parser": "^19.0.4"
 	},
 	"browserslist": [
 		"> 1%",
